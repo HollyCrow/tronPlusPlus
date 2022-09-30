@@ -1,4 +1,4 @@
-# tronPlusPlus
+# Tron++
 Basic tron game writen in C++ using the SFML library.
 
 Writen for a 2 player table-top arcade machine.
