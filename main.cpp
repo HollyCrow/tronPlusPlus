@@ -84,10 +84,37 @@ void calc(Player *player1, Player *player2){
 
 
 int main(){
-    sf::RenderWindow window(sf::VideoMode(1600, 1000), "Tron++");//, sf::Style::Fullscreen);
+    sf::RenderWindow window(sf::VideoMode(1600, 1000), "Tron++", sf::Style::Fullscreen);
+
+    sf::RectangleShape background;
+    background.setFillColor(sf::Color(33, 33, 33));
+    background.setSize(sf::Vector2f(1600,1000));
+
+    sf::Texture titleScreenImage;
+    titleScreenImage.loadFromFile("tron_loading_screen.png");
+    sf::Sprite titleScreenSprite;
+    titleScreenSprite.setTexture(titleScreenImage);
+
+    int state = 0;
 
 
+    while (state == 0 && window.isOpen()){
+        sf::Event event;
 
+        while (window.pollEvent((event))){
+            if(event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::T)) {window.close(); exit(0);}
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) || sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
+            {
+                state = 1;
+            }
+        }
+        window.clear();
+        window.draw(background);
+        window.draw(titleScreenSprite);
+
+
+        window.display();
+    }
 
     //actual game
 
@@ -95,11 +122,12 @@ int main(){
     Player player2(sf::Color(0, 255, 255), sf::Vector2<int> {-20, 0}, sf::Vector2<int> {1600-80, 500});
     std::thread thread_(calc, &player1, &player2);
 
+
     while (window.isOpen()){
         sf::Event event;
 
         while (window.pollEvent((event))){
-            if(event.type == sf::Event::Closed) {window.close(); exit(0);}
+            if(event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::T)) {window.close(); exit(0);}
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)){
                 if((player1.trail[0]+sf::Vector2<int>(0, -20)) != player1.trail[1]){
                     player1.move = sf::Vector2<int>(0, -20);
@@ -138,6 +166,7 @@ int main(){
         }
 
         window.clear();
+        window.draw(background);
         player1.bodyBlock.setPosition(((player1).trail)[0].x, ((player1).trail)[0].y);
         window.draw((player1).bodyBlock);
         for (int i = 1; i < player1.size; i++){
