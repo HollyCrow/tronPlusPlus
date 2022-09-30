@@ -84,14 +84,16 @@ void calc(Player *player1, Player *player2){
 
 
 int main(){
+    sf::RenderWindow window(sf::VideoMode(1600, 1000), "Tron++");//, sf::Style::Fullscreen);
+
+
+
+
+    //actual game
 
     Player player1(sf::Color(255, 0, 255), sf::Vector2<int> {20, 0}, sf::Vector2<int> {80, 500});
     Player player2(sf::Color(0, 255, 255), sf::Vector2<int> {-20, 0}, sf::Vector2<int> {1600-80, 500});
-
     std::thread thread_(calc, &player1, &player2);
-
-    sf::RenderWindow window(sf::VideoMode(1600, 1000), "Tron++");//, sf::Style::Fullscreen);
-
 
     while (window.isOpen()){
         sf::Event event;
