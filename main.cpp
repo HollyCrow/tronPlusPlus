@@ -87,17 +87,44 @@ public:
     }
 
     int bodyRotation(int position){
-        int texture;
-        sf::Vector2<int> backDifference = (trail[position] - trail[position-1]);
-        sf::Vector2<int> frontDifference = (trail[position+1] - trail[position]);
-        sf::Vector2<int> totalDifference = frontDifference - backDifference;
+        sf::Vector2<int> backDifference = sf::Vector2<int>{(trail[position].x - trail[position+1].x), (trail[position].y - trail[position+1].y)};
+        sf::Vector2<int> frontDifference = sf::Vector2<int>{(trail[position-1].x - trail[position].x), (trail[position-1].y - trail[position].y)};
+
+        backDifference.y = -backDifference.y;
+        frontDifference.y = -frontDifference.y;
+
+        sf::Vector2<int> totalDifference = sf::Vector2<int>{backDifference.x + frontDifference.x, backDifference.y + frontDifference.y};
+
+
         if (totalDifference.y == 0){
             return 1000;
         }else if (totalDifference.x == 0){
             return 1090;
-        }else if (totalDifference.x == totalDifference.y){
+        }else if (backDifference.x == 20){
+            if (frontDifference.y == 20){
+                return 2000;
+            }else{
+                return 2270;
+            }
+        }else if (backDifference.x == -20){
+            if (frontDifference.y == 20){
+                return 2090;
+            }else{
+                return 2180;
+            }
+        }else if (backDifference.y == 20){
+            if (frontDifference.x == 20){
+                return 2180;
+            }else{
+                return 2270;
+            }
+        }else if (backDifference.y == -20){
+            if (frontDifference.x == 20){
+                return 2090;
+            }else{
+                return 2000;
+            }
         }
-
     }
 };
 
@@ -120,6 +147,8 @@ void calc(Player *player1, Player *player2){
 
 
 int main(){
+
+
     sf::Texture end1;
     sf::Texture end2;
     sf::Texture body1;
@@ -223,7 +252,13 @@ int main(){
         player1.bodyBlock.setRotation(0.f);
         for (int i = 1; i < player1.size-1; i++){
             player1.bodyBlock.setPosition(((player1).trail)[i].x, ((player1).trail)[i].y);
-            player1.bodyBlock.setTexture(body1);
+            int textureInfo = player1.bodyRotation(i);
+            player1.bodyBlock.setRotation(textureInfo % 1000);
+            if (textureInfo - (textureInfo % 1000) == 1000){
+                player1.bodyBlock.setTexture(body1);
+            }else{
+                player1.bodyBlock.setTexture(corner1);
+            }
             window.draw((player1).bodyBlock);
         }
         player1.bodyBlock.setPosition(((player1).trail)[player1.size-1].x, ((player1).trail)[player1.size-1].y);
@@ -240,7 +275,13 @@ int main(){
         player2.bodyBlock.setRotation(180);
         for (int i = 1; i < player2.size-1; i++){
             player2.bodyBlock.setPosition(((player2).trail)[i].x, ((player2).trail)[i].y);
-            player2.bodyBlock.setTexture(body2);
+            int textureInfo = player2.bodyRotation(i);
+            player2.bodyBlock.setRotation(textureInfo % 1000);
+            if (textureInfo - (textureInfo % 1000) == 1000){
+                player2.bodyBlock.setTexture(body2);
+            }else{
+                player2.bodyBlock.setTexture(corner2);
+            }
             window.draw((player2).bodyBlock);
         }
         player2.bodyBlock.setPosition(((player2).trail)[player2.size-1].x, ((player2).trail)[player2.size-1].y);
