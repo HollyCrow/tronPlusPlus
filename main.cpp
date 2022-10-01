@@ -86,7 +86,19 @@ public:
         return 0;
     }
 
+    int bodyRotation(int position){
+        int texture;
+        sf::Vector2<int> backDifference = (trail[position] - trail[position-1]);
+        sf::Vector2<int> frontDifference = (trail[position+1] - trail[position]);
+        sf::Vector2<int> totalDifference = frontDifference - backDifference;
+        if (totalDifference.y == 0){
+            return 1000;
+        }else if (totalDifference.x == 0){
+            return 1090;
+        }else if (totalDifference.x == totalDifference.y){
+        }
 
+    }
 };
 
 
@@ -133,7 +145,7 @@ int main(){
     titleScreenSprite.setTexture(titleScreenImage);
 
     int state = 0;
-    sf::Event event;
+    sf::Event event{};
 
     while (state == 0 && window.isOpen()){
 
