@@ -17,6 +17,7 @@ public:
     sf::Vector2<int> move = {20, 0};
     sf::Vector2<int> trail[(1000/20)*(1600/20)];
     int size = 0;
+    bool loss = false;
 
 
     Player(sf::Vector2<int> facing, sf::Vector2<int> start, int player){
@@ -125,21 +126,32 @@ public:
                 return 2000;
             }
         }
+        return 0;
     }
 };
 
 
 void calc(Player *player1, Player *player2){
     while (true){
-        if ((*player1).out() || (*player1).cutSelf((*player1).trail[0]+(*player1).move) || (*player2).cutSelf((*player1).trail[0]+(*player1).move))break;
-        else if ((*player1).size <= 10000) (*player1).increase();
-        else (*player1).movePlayer();
+        if ((*player1).out() || (*player1).cutSelf((*player1).trail[0]+(*player1).move) || (*player2).cutSelf((*player1).trail[0]+(*player1).move)) {
+            (*player1).loss = true;
+            break;
+        }
 
-        if ((*player2).out() || (*player1).cutSelf((*player2).trail[0]+(*player2).move) || (*player2).cutSelf((*player2).trail[0]+(*player2).move))break;
-        else if ((*player2).size <= 10000) (*player2).increase();
-        else (*player2).movePlayer();
 
-        sleep_for(nanoseconds(200000000));
+        if ((*player2).out() || (*player1).cutSelf((*player2).trail[0]+(*player2).move) || (*player2).cutSelf((*player2).trail[0]+(*player2).move)) {
+            (*player2).loss = true;
+            break;
+        }
+
+        if((*player1).loss || (*player1).loss){
+            break;
+        }else{
+            (*player2).increase();
+            (*player1).increase();
+        }
+
+        sleep_for(nanoseconds(100000000));
     }
     //(*player1).bodyBlock.setFillColor(sf::Color(100, 100, 0));
     //(*player2).bodyBlock.setFillColor(sf::Color(100, 100, 0));
@@ -161,6 +173,11 @@ int main(){
     body2.loadFromFile("assets/p2_body.png");
     corner1.loadFromFile("assets/p1_corner.png");
     corner2.loadFromFile("assets/p2_corner.png");
+
+    sf::Texture restart;
+    restart.loadFromFile("assets/restart.png");
+    sf::Sprite restartButton;
+    restartButton.setTexture(restart);
 
     sf::RenderWindow window(sf::VideoMode(1600, 1000), "Tron++");//, sf::Style::Fullscreen);
 
@@ -288,8 +305,6 @@ int main(){
         player2.bodyBlock.setTexture(end2);
         player2.bodyBlock.setRotation(180);
         window.draw((player2).bodyBlock);
-
-
 
         window.display();
     }
