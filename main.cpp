@@ -1,9 +1,10 @@
 #include <SFML/Graphics.hpp>
 #include <thread>
-#include <vector>
 #include <iostream>
-#include<set>
-#define pi 3.141592
+
+#define rezx 1366
+#define rezy 768
+
 
 using namespace std;
 using namespace std::this_thread; // sleep_for, sleep_until
@@ -15,7 +16,7 @@ public:
     sf::Sprite bodyBlock;
     //sf::RectangleShape headBlock;
     sf::Vector2<int> move = {20, 0};
-    sf::Vector2<int> trail[(1000/20)*(1600/20)];
+    sf::Vector2<int> trail[(1360/20)*(770/20)];
     int size = 0;
     bool loss = false;
 
@@ -55,7 +56,7 @@ public:
     }
 
     bool out(){
-        if ((sf::Vector2<int>(trail[0]+move).x > 1600-20) || (sf::Vector2<int>(trail[0]+move).x < 0) || (sf::Vector2<int>(trail[0]+move).y > 1000-20) || (sf::Vector2<int>(trail[0]+move).y < 0)){
+        if ((sf::Vector2<int>(trail[0]+move).x > 1360-20) || (sf::Vector2<int>(trail[0]+move).x < 10) || (sf::Vector2<int>(trail[0]+move).y > 770-20) || (sf::Vector2<int>(trail[0]+move).y < 10)){
             return true;
         }
         return false;
@@ -130,7 +131,6 @@ public:
     }
 };
 
-
 void calc(Player *player1, Player *player2){
     while (true){
         if ((*player1).out() || (*player1).cutSelf((*player1).trail[0]+(*player1).move) || (*player2).cutSelf((*player1).trail[0]+(*player1).move)) {
@@ -157,10 +157,7 @@ void calc(Player *player1, Player *player2){
     //(*player2).bodyBlock.setFillColor(sf::Color(100, 100, 0));
 }
 
-
 int main(){
-
-
     sf::Texture end1;
     sf::Texture end2;
     sf::Texture body1;
@@ -179,11 +176,11 @@ int main(){
     sf::Sprite restartButton;
     restartButton.setTexture(restart);
 
-    sf::RenderWindow window(sf::VideoMode(1600, 1000), "Tron++");//, sf::Style::Fullscreen);
+    sf::RenderWindow window(sf::VideoMode(rezx, rezy), "Tron++");//, sf::Style::Fullscreen);
 
     sf::RectangleShape background;
     background.setFillColor(sf::Color(33, 33, 33));
-    background.setSize(sf::Vector2f(1600,1000));
+    background.setSize(sf::Vector2f(rezx,rezy));
 
     sf::Texture titleScreenImage;
     titleScreenImage.loadFromFile("./assets/tron_loading_screen.png");
@@ -207,14 +204,13 @@ int main(){
         window.draw(background);
         window.draw(titleScreenSprite);
 
-
         window.display();
     }
 
     //actual game
 
-    Player player1(sf::Vector2<int> {20, 0}, sf::Vector2<int> {20, 500}, 1);
-    Player player2(sf::Vector2<int> {-20, 0}, sf::Vector2<int> {1520, 500}, 1);
+    Player player1(sf::Vector2<int> {20, 0}, sf::Vector2<int> {80, 380}, 1);
+    Player player2(sf::Vector2<int> {-20, 0}, sf::Vector2<int> {1260, 380}, 1);
     std::thread thread_(calc, &player1, &player2);
 
     while (window.isOpen()){
